@@ -1,0 +1,13 @@
+
+<div xmlns:th="http://www.thymeleaf.org">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<b class="  glyphicon glyphicon-briefcase"></b> Danh mục
+		</div>
+		<ul class="list-group">
+		    <a th:href="@{/thymlef/product/list}" class="list-group-item" >Tất cả</a>
+			<a th:each="c:${cates}" th:href="@{|/thymlef/product/list?cid=${c.id}|}" class="list-group-item" >[[${c.name}]]</a>
+		</ul>
+	</div>
+
+</div>
