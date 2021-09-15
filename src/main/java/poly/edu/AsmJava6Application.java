@@ -15,9 +15,4 @@ public class AsmJava6Application  {
 	public static void main(String[] args) {
 		SpringApplication.run(AsmJava6Application.class, args);
 	}
-	
-
-
-	
-
 }

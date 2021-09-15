@@ -1,6 +1,7 @@
 package poly.edu.serviceImpl;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +52,14 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Override
 	public OrderModel create(String address, List<CartItemModel> listCartModel) {
-		String username = (String) request.getSession().getAttribute("username");
+		String username;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails) principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
 		User user = userRepository.findByUsername(username);
 		Order order = new Order();
 		order.setUser(user);
@@ -80,7 +90,13 @@ public class OrderServiceImpl implements OrderService {
 		String username = (String) request.getSession().getAttribute("username");
 		User user = userRepository.findByUsername(username);
 		List<Order> list = repository.findByUser(user);
-		List<OrderModel> listModel = objectMapper.mapAll(list, OrderModel.class);
+		List<Order> listNew = new ArrayList<Order>();
+		for (Order order : list) {
+			if(order.getStatus()<100) {
+				listNew.add(order);
+			}
+		}
+		List<OrderModel> listModel = objectMapper.mapAll(listNew, OrderModel.class);
 		return listModel;
 	}
 	
